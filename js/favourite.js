@@ -1,12 +1,13 @@
 const searchList = document.getElementById('search-list');
+const noResult = document.getElementById('no-result');
 let favMovieList = [];
 let movieList = [];
-let noResult = document.getElementById('no-result');
 
+//Function to show th miovie list on UI
 function displayMovieList() {
-    if (movieList && movieList.length >0) {
+    if (movieList && movieList.length > 0) {
         searchList.innerHTML = '';
-        noResult.innerHTML ='';
+        noResult.innerHTML = '';
         for (var idx in movieList) {
             let movieListItem = document.createElement('li');
             if (movieList[idx].Poster != "N/A")
@@ -39,7 +40,7 @@ function displayMovieList() {
             </div>`;
             searchList.appendChild(movieListItem);
         }
-    }else{
+    } else {
         searchList.innerHTML = '';
         noResult.innerHTML = '<h4>No favourites added</h4>';
     }
@@ -47,27 +48,35 @@ function displayMovieList() {
 
 }
 
+//Function to add movie to favourite movie list
 function addToFav(imdbID) {
     if (!favMovieList.includes(imdbID, 0)) {
+        //Add id to favMovieList list
         favMovieList.push(imdbID);
+        //Update the list in local storage
         localStorage.setItem('favMovieList', JSON.stringify(favMovieList));
         loadfavMovies();
     }
 }
 
+//Function to remove movie from favourite movie list
 function removeFromfav(imdbID) {
     if (favMovieList.includes(imdbID, 0)) {
+        //Remove id from favMovieList list
         const newfavMovieList = favMovieList.filter(function (Id) {
             return Id !== imdbID;
         });
         favMovieList = newfavMovieList;
+        //Update the list in local storage
         localStorage.setItem('favMovieList', JSON.stringify(favMovieList));
         loadfavMovies();
     }
 }
 
+//Function used to load the movies from favourite movie list
 async function loadfavMovies() {
     movieList = [];
+    //Iterate throught the list and show the list
     for (let index = 0; index < favMovieList.length; index++) {
         const result = await fetch(`https://www.omdbapi.com/?i=${favMovieList[index]}&apikey=e64b8c75`);
         const movieDetails = await result.json();
@@ -80,11 +89,14 @@ function movieDetails(imdbID) {
     movieSearchBox.value = "";
     window.location.href = `Movie.html?id=${imdbID}`;
 }
-
+//Function used to initialise the favourite page
 function InitialiseFavouritePage() {
+    //Get local storage for favourite movie list
     if (localStorage.getItem("favMovieList") === null) {
+        //If list is not created create a list
         localStorage.setItem('favMovieList', JSON.stringify(favMovieList));
     } else {
+        //Read list from local storage
         favMovieList = JSON.parse(localStorage.getItem('favMovieList'));
     }
     loadfavMovies();

@@ -4,6 +4,7 @@ let favMovieList = [];
 let movieList = {};
 let noResult = document.getElementById('no-result');
 
+//Function called when input changes for search input
 function findMovies() {
     let searchTerm = (movieSearchBox.value).trim();
     if (searchTerm.length > 0) {
@@ -12,7 +13,7 @@ function findMovies() {
         searchList.innerHTML = '';
     }
 }
-// load movies from API
+//Function to load movies from API
 async function loadMovies(searchTerm) {
     const URL = `https://www.omdbapi.com/?s=${searchTerm}&page=1&apikey=e64b8c75`;
     const res = await fetch(`${URL}`);
@@ -20,11 +21,11 @@ async function loadMovies(searchTerm) {
     movieList = data.Search;
     displayMovieList();
 }
-
+//Function to show movies on UI
 function displayMovieList() {
     if (movieList && movieList.length > 0) {
         searchList.innerHTML = '';
-        noResult.innerHTML ='';
+        noResult.innerHTML = '';
         for (let idx = 0; idx < movieList.length; idx++) {
             let movieListItem = document.createElement('li');
             if (movieList[idx].Poster != "N/A")
@@ -58,33 +59,42 @@ function displayMovieList() {
             </div>`;
             searchList.appendChild(movieListItem);
         }
-    }else{
+    } else {
         searchList.innerHTML = '';
         noResult.innerHTML = '<h4>No matching results found</h4>';
     }
 
 
 }
-
+//Function to show movie details
 function movieDetails(imdbID) {
     movieSearchBox.value = "";
     window.location.href = `Movie.html?id=${imdbID}`;
 }
+//Function to add movie to favourite movie list
 function addToFav(imdbID) {
     if (!favMovieList.includes(imdbID, 0)) {
+        //Add id to favMovieList list
         favMovieList.push(imdbID);
+        //Update the list in local storage
         localStorage.setItem('favMovieList', JSON.stringify(favMovieList));
         displayMovieList();
     }
 }
+//Function to remove movie from favourite movie list
 function removeFromfav(imdbID) {
     if (favMovieList.includes(imdbID, 0)) {
-        const index = favMovieList.indexOf(imdbID);
-        delete favMovieList[index];
+        //Remove id from favMovieList list
+        const newfavMovieList = favMovieList.filter(function (Id) {
+            return Id !== imdbID;
+        });
+        favMovieList = newfavMovieList;
+        //Update the list in local storage
         localStorage.setItem('favMovieList', JSON.stringify(favMovieList));
-        displayMovieList();
+        loadfavMovies();
     }
 }
+//Function to initialise the home page
 function InitialiseHomePage() {
 
     if (localStorage.getItem("favMovieList") === null) {
