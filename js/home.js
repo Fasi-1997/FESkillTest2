@@ -91,7 +91,7 @@ function removeFromfav(imdbID) {
         favMovieList = newfavMovieList;
         //Update the list in local storage
         localStorage.setItem('favMovieList', JSON.stringify(favMovieList));
-        loadfavMovies();
+        displayMovieList();
     }
 }
 //Function to initialise the home page
