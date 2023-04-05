@@ -86,7 +86,6 @@ async function loadfavMovies() {
 }
 
 function movieDetails(imdbID) {
-    movieSearchBox.value = "";
     window.location.href = `Movie.html?id=${imdbID}`;
 }
 //Function used to initialise the favourite page
